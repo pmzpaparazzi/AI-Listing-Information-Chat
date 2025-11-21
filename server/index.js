@@ -3,42 +3,35 @@ const cors = require("cors");
 const path = require("path");
 require("dotenv").config();
 
+// REAL OPENAI POWERED LISTING BOT
 import OpenAI from "openai";
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
-const app = express();
-app.use(express.json());
-app.use(cors());
-
-// Serve frontend
-app.use(express.static(path.join(__dirname, "../public")));
-
-app.post("/api/listing", async (req, res) => {
+app.post('/api/listing', async (req, res) => {
   try {
     const { message } = req.body;
 
     const completion = await client.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
-        {
-          role: "system",
-          content:
-            "You are a Luxury Real Estate Listing AI. Provide REAL, luxury-style property listings with estimated pricing in a natural tone."
-        },
+        { role: "system", content: "You are a real estate AI that recommends luxury listings based on user requests." },
         { role: "user", content: message }
       ]
     });
 
     const aiReply = completion.choices[0].message.content;
-
     res.json({ reply: aiReply });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "AI request failed" });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ reply: "Error connecting to AI." });
   }
 });
+
+
+  
 
 // Serve homepage
 app.get("/", (req, res) => {
