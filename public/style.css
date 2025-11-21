@@ -1,0 +1,6 @@
+
+body { font-family: Arial; background:#f5f5f5; padding:20px; }
+.chatbox { max-width:600px; margin:auto; background:#fff; padding:20px; border-radius:8px; }
+#chat { height:300px; overflow-y:auto; background:#eee; padding:10px; margin-bottom:10px; }
+.user { color:#bfa06e; }
+.ai { color:#111; }
