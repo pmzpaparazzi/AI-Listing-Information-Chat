@@ -3,19 +3,12 @@ const cors = require("cors");
 const path = require("path");
 require("dotenv").config();
 
-// 💡 Correct OpenAI import for CommonJS
+// REAL OPENAI POWERED LISTING BOT (CJS VERSION FOR RAILWAY)
 const OpenAI = require("openai");
-
-// Initialize OpenAI client
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
-const app = express();
-app.use(express.json());
-app.use(cors());
-
-// === REAL AI LISTING BOT ENDPOINT ===
 app.post("/api/listing", async (req, res) => {
   try {
     const { message } = req.body;
@@ -23,11 +16,7 @@ app.post("/api/listing", async (req, res) => {
     const completion = await client.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
-        {
-          role: "system",
-          content:
-            "You are an AI real estate expert that recommends luxury properties. Always provide price, beds, baths, location, and style."
-        },
+        { role: "system", content: "You are a luxury real estate AI assistant." },
         { role: "user", content: message }
       ]
     });
@@ -35,11 +24,12 @@ app.post("/api/listing", async (req, res) => {
     const aiReply = completion.choices[0].message.content;
     res.json({ reply: aiReply });
 
-  } catch (err) {
-    console.error("AI ERROR:", err);
-    res.status(500).json({ reply: "AI connection error." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ reply: "AI error occurred." });
   }
 });
+
 
 // === Serve Frontend ===
 app.use(express.static(path.join(__dirname, "../public")));
