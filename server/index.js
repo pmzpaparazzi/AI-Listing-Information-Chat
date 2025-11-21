@@ -20,19 +20,22 @@ app.post("/api/listing", async (req, res) => {
     const completion = await client.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
-        { role: "system", content: "You are a luxury real estate AI assistant." },
+        { role: "system", content: "You are a luxury real estate AI assistant. Provide detailed property recommendations." },
         { role: "user", content: message }
       ]
     });
 
     const aiReply = completion.choices[0].message.content;
-    res.json({ reply: aiReply });
+    return res.json({ reply: aiReply });
 
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ reply: "AI error. Check API key or server logs." });
+    console.error("OpenAI ERROR:", err);
+    return res.status(500).json({
+      reply: "AI error — check your Railway logs or OpenAI key."
+    });
   }
 });
+
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/index.html"));
